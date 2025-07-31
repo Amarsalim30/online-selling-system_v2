@@ -1,13 +1,14 @@
-# Stage 1: Build using Maven + Java 17
-FROM maven:3.9.0-eclipse-temurin-17-alpine AS build
+# Build stage with Java 21
+FROM maven:3.9.8-eclipse-temurin-21 AS build
 WORKDIR /project
 COPY pom.xml .
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
-# Stage 2: Run the JAR
-FROM eclipse-temurin:17-jre-alpine
+# Runtime stage
+FROM openjdk:21-jre-slim
 WORKDIR /app
 COPY --from=build /project/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
