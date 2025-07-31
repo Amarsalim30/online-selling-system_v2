@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Business Management App</title>
+  <!-- External Stylesheets -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+  />
+  <!-- Select2 CSS -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+    rel="stylesheet"
+  />
+  <!-- FullCalendar CSS -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"
+    rel="stylesheet"
+  />
+  <link href="css/notification.css" rel="stylesheet" />
+  <link href="css/calendar.css" rel="stylesheet" />
+    <!-- External Scripts -->
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Select2 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <!-- Moment.js (for FullCalendar) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <!-- FullCalendar JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="myTopnav">
+    <div class="navbar-container">
+      <a class="navbar-brand" href="#">
+        <i class="fa fa-briefcase"></i>
+        Business Management
+      </a>
+
+      <button class="navbar-toggle">
+        <i class="fa fa-bars"></i>
+      </button>
+
+      <ul class="navbar-menu">
+        <li class="nav-item">
+          <a class="nav-link" href="#customer-management">
+            <i class="fa fa-users"></i>
+            Customers
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#order-management">
+            <i class="fa fa-shopping-cart"></i>
+            Orders
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#scheduling-management">
+            <i class="fa fa-calendar"></i>
+            Schedule
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#product-list">
+            <i class="fa fa-cubes"></i>
+            Products
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/payments.html" onclick="window.location='/payments.html'; return false;">
+            <i class="fa fa-history"></i>
+            Payments
+          </a>
+        </li>
+
+      </ul>
+
+      <div class="navbar-actions">
+        <div class="notification-icon">
+          <i class="fa fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </div>
+
+        <div class="dropdown">
+          <div class="user-profile">
+            <i class="fa fa-user-circle"></i>
+            <span>John Doe</span>
+          </div>
+          <div class="dropdown-content">
+            <a href="#profile">
+              <i class="fa fa-user"></i>
+              Profile
+            </a>
+            <a href="#settings">
+              <i class="fa fa-cog"></i>
+              Settings
+            </a>
+            <a href="#logout">
+              <i class="fa fa-sign-out"></i>
+              Logout
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Loading Spinner -->
+  <div id="loading-spinner" style="display: none;">
+    <img src="./images/spinner.gif" alt="Loading..." />
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Customer Management Section -->
+    <section id="customer-management">
+      <h2>Customer Management</h2>
+      <input type="text" id="search-customer" placeholder="Search by name or number" />
+      <!-- Button to open the sidebar -->
+      <button id="open-add-customer-sidebar" class="btn-primary">Add Customer</button>
+
+      <!-- Sidebar for adding a customer -->
+      <div id="add-customer-sidebar" class="sidebar">
+        <!-- Close button -->
+        <a href="javascript:void(0)" class="closebtn" id="close-add-customer-sidebar">&times;</a>
+        <form id="add-customer-form" action="#" method="post">
+          <input type="file" id="browse-contact" name="contactImage" accept="image/*" />
+          <input type="text" id="customer-name" name="name" placeholder="Name" required />
+          <div class="phone-input-group">
+            <div class="country-code">
+              <span class="country-flag">🇰🇪</span>
+              <span class="code-text">+254</span>
+            </div>
+            <input type="tel" 
+                   id="phone-number" 
+                   name="number" 
+                   placeholder="7XX XXX XXX" 
+                   maxlength="11"
+                   autocomplete="tel"
+                   pattern="[17][0-9]{2}\s[0-9]{3}\s[0-9]{3}"
+                   inputmode="numeric"
+                   title="Please enter a valid phone number starting with 7 or 1"
+                   required>
+          </div>
+          <button type="submit" class="btn-primary">Add Customer</button>
+        </form>
+      </div>
+
+      <!-- Collapsible Button -->
+      <button type="button" class="collapsible">Customer List</button>
+
+      <!-- Collapsible Content -->
+      <div class="content">
+
+        <!-- Customer Table -->
+        <table id="customer-list">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Number</th>
+              <th>Order Count</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Customer entries will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </section> <!-- Close the customer-management section -->
+
+    <!-- Order Management Section -->
+    <section id="order-management">
+      <h2>Order Management</h2>
+      <input type="text" id="search-order" placeholder="Search by customer name or date" />
+      <!-- Button to open the sidebar -->
+      <button id="open-add-order-sidebar" class="btn-primary">Add Order</button>
+
+      <!-- Sidebar for adding an order -->
+      <div id="add-order-sidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" id="close-add-order-sidebar">&times;</a>
+        <form id="add-order-form">
+            <h3 class="form-title">Create New Order</h3>
+            
+            <div class="form-section">
+                <h4>Customer Details</h4>
+                <div class="form-group">
+                    <label for="select-customer">Customer <span class="required">*</span></label>
+                    <select id="select-customer" name="customerId" required>
+                        <option value="">Search for customer...</option>
+                    </select>
+                </div>
+            </div>
+    
+            <div class="form-section">
+                <h4>Order Items</h4>
+                <div id="product-selection">
+                    <!-- Product entries will be added here -->
+                </div>
+                <button type="button" id="add-product" class="btn-outline">
+                    <i class="fa fa-plus"></i> Add Another Product
+                </button>
+            </div>
+    
+            <div class="form-section">
+                <h4>Order Details</h4>
+                <div class="form-group">
+                    <label for="date-of-event">Event Date <span class="required">*</span></label>
+                    <input type="date" 
+                           id="date-of-event" 
+                           name="dateOfEvent" 
+                           required 
+                           min="<?php echo date('Y-m-d'); ?>">
+                </div>
+                <div class="form-group">
+                    <label for="order-status">Status <span class="required">*</span></label>
+                    <select id="order-status" name="status" required>
+                        <option value="">Select status...</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+    
+            <div class="form-summary">
+                <div class="order-details">
+                    <div class="subtotal">
+                        <span>Subtotal:</span>
+                        <span id="order-subtotal">KES 0.00</span>
+                    </div>
+                    <div class="total">
+                        <span>Total Amount:</span>
+                        <span id="order-total-amount">KES 0.00</span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="document.getElementById('close-add-order-sidebar').click()">
+                    Cancel
+                </button>
+                <button type="submit" class="btn-primary" disabled>
+                    Create Order
+                </button>
+            </div>
+        </form>
+      </div>
+
+      <!-- Existing Order List -->
+      <button class="collapsible">Order List</button>
+      <div class="content">
+        <table id="order-list">
+          <thead>
+            <tr>
+              <th>Customer Name</th>
+              <th>Customer Number</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Products</th>
+              <th>Total Amount</th>
+              <th>Paid Amount</th>
+              <th>Remaining Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Order entries will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Scheduling Management Section -->
+    <section id="scheduling-management">
+      <h2>Scheduling Management</h2>
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <div class="calendar-navigation">
+            <button id="prev-month" aria-label="Previous Month"><</button>
+          </div>
+          <h2 id="month-year"></h2>
+          <div class="calendar-navigation">
+            <button id="next-month" aria-label="Next Month">></button>
+          </div>
+        </div>
+        <div class="calendar-weekdays">
+          <div>Sun</div>
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
+        </div>
+        <div class="calendar-days" id="calendar-days"></div>
+      </div>
+      <div class="event-list">
+        <h3>Events for <span id="selected-date"></span></h3>
+        <ul id="event-items">
+          <li>No events for this day.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Product List Section -->
+    <section id="product-list">
+      <h2>Product List</h2>
+      <button id="open-add-product-sidebar" class="btn-primary">Add Product</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Availability</th>
+            <th>Price</th> <!-- Add Price column -->
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Product entries will be populated here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Sidebar for adding a product -->
+    <div id="add-product-sidebar" class="sidebar">
+      <!-- Close button -->
+      <a href="javascript:void(0)" class="closebtn" id="close-add-product-sidebar">&times;</a>
+      <form id="add-product-form">
+        <input type="text" id="product-name" name="name" placeholder="Product Name" required />
+        <input type="number" id="product-availability" name="availability" placeholder="Availability" required />
+        <input type="number" id="product-price" name="price" placeholder="Price" required />
+        <button type="submit" class="btn-primary">Add Product</button>
+      </form>
+    </div>
+  </div>
+  <div id="payment-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Update Payment</h2>
+        <div class="payment-details">
+            <p>Current Total: <span id="modal-total"></span></p>
+            <p>Already Paid: <span id="modal-paid"></span></p>
+            <p>Remaining: <span id="modal-remaining"></span></p>
+        </div>
+        <form id="payment-form">
+            <div class="form-group">
+                <label for="payment-amount">Payment Amount (KES)</label>
+                <input type="number" id="payment-amount" step="0.01" min="0" required>
+            </div>
+            <button type="submit" class="btn-primary">Update Payment</button>
+        </form>
+    </div>
+</div>
+
+<div id="notification-container" class="notification-container"></div>
+
+  <!-- Our App JS -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
